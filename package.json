@@ -1,0 +1,38 @@
+{
+  "name": "hardhat-tutorial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "chain": "hardhat node --network hardhat",
+    "compile": "hardhat compile",
+    "test": "hardhat test --network hardhat",
+    "watch": "node scripts/watch.js",
+    "deploy": "hardhat deploy",
+    "accounts": "hardhat accounts",
+    "balance": "hardhat balance",
+    "generate": "hardhat generate",
+    "account": "hardhat account",
+    "mint": "hardhat run scripts/mint.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.10",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "^4.3.1",
+    "bip39": "^3.0.4",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.4.0",
+    "ethereumjs-wallet": "^0.6.3",
+    "ethers": "^5.4.6",
+    "hardhat": "^2.6.2",
+    "hardhat-deploy": "^0.9.1",
+    "ipfs-http-client": "^52.0.3",
+    "node-watch": "^0.7.1",
+    "qrcode-terminal": "^0.12.0",
+    "ramda": "^0.27.1",
+    "dotenv": "^10.0.0"
+  }
+}
