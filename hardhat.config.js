@@ -11,7 +11,6 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 const defaultNetwork = process.env.NETWORK || "localhost";
 const deployerAddress = process.env.DEPLOYER;
 const infuraKey = process.env.INFURA_KEY;
-const smartbchGwei = 1.047;
 
 function mnemonic() {
   try {
@@ -44,7 +43,7 @@ module.exports = {
     testnetSmartBCH: {
       url: "http://35.220.203.194:8545",
       chainId: 10001,
-      gasPrice: smartbchGwei*1000000000,
+      gasPrice: 1047000000,
       accounts: {
         mnemonic: mnemonic()
       }
@@ -52,7 +51,7 @@ module.exports = {
     mainnetSmartBCH: {
       url: "https://smartbch.greyh.at",
       chainId: 10000,
-      gasPrice: smartbchGwei*1000000000,
+      gasPrice: 1047000000,
       accounts: {
         mnemonic: mnemonic()
       }
