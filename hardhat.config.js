@@ -12,6 +12,8 @@ const defaultNetwork = process.env.NETWORK || "localhost";
 const deployerAddress = process.env.DEPLOYER;
 const infuraKey = process.env.INFURA_KEY;
 
+const smartbchFee = 1050000000;
+
 function mnemonic() {
   try {
     return fs.readFileSync("./mnemonic.txt").toString().trim();
@@ -41,17 +43,17 @@ module.exports = {
       }
     },
     testnetSmartBCH: {
-      url: "http://35.220.203.194:8545",
+      url: "http://35.220.203.194:8545", // "https://moeing.tech:9545",
       chainId: 10001,
-      gasPrice: 1047000000,
+      gasPrice: smartbchFee,
       accounts: {
         mnemonic: mnemonic()
       }
     },
     mainnetSmartBCH: {
-      url: "https://smartbch.greyh.at",
+      url: "https://smartbch.greyh.at", // "https://global.uat.cash",
       chainId: 10000,
-      gasPrice: 1047000000,
+      gasPrice: smartbchFee,
       accounts: {
         mnemonic: mnemonic()
       }
