@@ -12,8 +12,6 @@ const defaultNetwork = process.env.NETWORK || "localhost";
 const deployerAddress = process.env.DEPLOYER;
 const infuraKey = process.env.INFURA_KEY;
 
-const smartbchFee = 1050000000;
-
 function mnemonic(network="mainnet") {
   try {
     const fileName = network === "mainnet" ? "mnemonic" : `mnemonic_${network}`
