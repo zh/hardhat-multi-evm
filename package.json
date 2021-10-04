@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "chain": "hardhat node --network hardhat",
+    "chain": "hardhat node --network hardhat --no-deploy",
     "compile": "hardhat compile",
     "test": "hardhat test --network hardhat",
     "watch": "node scripts/watch.js",
