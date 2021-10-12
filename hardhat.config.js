@@ -57,7 +57,7 @@ module.exports = {
         mnemonic: mnemonic()
       }
     },
-    localAva: {
+    localAvalanche: {
       url: 'http://localhost:9650/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43112,
@@ -74,7 +74,7 @@ module.exports = {
         "0x750839e9dbbd2a0910efe40f50b2f3b2f2f59f5580bb4b83bd8c1201cf9a010a"
       ]
     },
-    fujiAva: {
+    fujiAvalanche: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43113,
@@ -82,7 +82,7 @@ module.exports = {
         mnemonic: mnemonic("testnet")
       }
     },
-    mainnetAva: {
+    mainnetAvalanche: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43114,
@@ -142,7 +142,7 @@ module.exports = {
       chainId: 88,
       gasPrice: 1000000000,
       accounts: {
-        mnemonic: mnemonic("testnet"),
+        mnemonic: mnemonic(),
       },
     },
   },
