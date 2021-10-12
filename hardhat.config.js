@@ -105,7 +105,46 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic()
       }
-    }
+    },
+    moondev: {
+      url: "http://127.0.0.1:9933",
+      chainId: 1281,
+      accounts: {
+        mnemonic: mnemonic("moon"),
+      },
+    },
+    moonbase: {
+      url: "https://rpc.testnet.moonbeam.network",
+      gasPrice: 1000000000,
+      chainId: 1287,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
+    moonriver: {
+      url: "https://rpc.moonriver.moonbeam.network",
+      chainId: 1285,
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    testnetTomo: {
+      url: "https://rpc.testnet.tomochain.com",
+      chainId: 89,
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
+    mainnetTomo: {
+      url: "https://rpc.tomochain.com",
+      chainId: 88,
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
   },
   solidity: {
     compilers: [
