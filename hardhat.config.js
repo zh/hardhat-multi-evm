@@ -132,7 +132,7 @@ module.exports = {
     testnetTomo: {
       url: "https://rpc.testnet.tomochain.com",
       chainId: 89,
-      gasPrice: 1000000000,
+      gasPrice: 250000000,
       accounts: {
         mnemonic: mnemonic("testnet"),
       },
@@ -140,7 +140,7 @@ module.exports = {
     mainnetTomo: {
       url: "https://rpc.tomochain.com",
       chainId: 88,
-      gasPrice: 1000000000,
+      gasPrice: 250000000,
       accounts: {
         mnemonic: mnemonic(),
       },
