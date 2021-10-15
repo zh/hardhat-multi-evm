@@ -2,11 +2,10 @@
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
-  const {deployer, tokenOwner} = await getNamedAccounts();
-  await deploy('AwesomeToken', {
+  const { deployer } = await getNamedAccounts();
+  await deploy("DevToken", {
     from: deployer,
-    args: [],
     log: true,
   });
 };
-module.exports.tags = ["AWE"];
+module.exports.tags = ["DEV"];
