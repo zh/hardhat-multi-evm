@@ -2,12 +2,13 @@
 pragma solidity ^0.8.4;
 
 import "./Ownable.sol";
+import "./Stakable.sol";
 
 /**
  * @notice DevToken is a development token that we use to learn how to code solidity
  * and what BEP-20 interface requires
  */
-contract DevToken is Ownable {
+contract DevToken is Ownable, Stakable {
     /**
      * @notice Our Tokens required variables that are needed to operate everything
      */
@@ -344,5 +345,30 @@ contract DevToken is Ownable {
             _allowances[msg.sender][spender] - amount
         );
         return true;
+    }
+
+    /**
+     * Add functionality like burn to the _stake function
+     *
+     */
+    function stake(uint256 _amount) public {
+        // Make sure staker actually is good for it
+        require(
+            _amount <= _balances[msg.sender],
+            "DevToken: Cannot stake more than you own"
+        );
+
+        _stake(_amount);
+        // Burn the amount of tokens on the sender
+        _burn(msg.sender, _amount);
+    }
+
+    /**
+     * @notice withdrawStake is used to withdraw stakes from the account holder
+     */
+    function withdrawStake(uint256 amount, uint256 stake_index) public {
+        uint256 amount_to_mint = _withdrawStake(amount, stake_index);
+        // Return staked tokens to user
+        _mint(msg.sender, amount_to_mint);
     }
 }

@@ -1,6 +1,11 @@
 // We import Chai to use its asserting functions here.
 const { expect } = require('chai');
 
+const timeForward = async (hours) => {
+  await ethers.provider.send('evm_increaseTime', [3600 * hours]);
+  await ethers.provider.send('evm_mine');
+};
+
 // `describe` is a Mocha function that allows you to organize your tests. It's
 // not actually needed, but having your tests organized makes debugging them
 // easier. All Mocha functions are available in the global scope.
@@ -219,6 +224,94 @@ describe('DevToken contract', function () {
       expect(addr2Balance).to.equal(60);
       allowance = await hardhatToken.allowance(owner.address, addr1.address);
       expect(allowance).to.equal(40);
+    });
+  });
+
+  describe('Staking', function () {
+    it('Should not stake more than own', async function () {
+      await expect(hardhatToken.connect(addr2).stake(1000)).to.revertedWith(
+        'DevToken: Cannot stake more than you own'
+      );
+    });
+    it('Should stake and emit event', async function () {
+      const stakeTokens = 1000;
+      await hardhatToken.mint(addr1.address, stakeTokens);
+      // Grab the balance again to see what it is after calling mint
+      const addr1Balance = await hardhatToken.balanceOf(addr1.address);
+      expect(addr1Balance).to.equal(stakeTokens);
+      const time = Date.now();
+      await ethers.provider.send('evm_setNextBlockTimestamp', [time]);
+      await ethers.provider.send('evm_mine');
+      // stake 2 times
+      await expect(hardhatToken.stake(stakeTokens))
+        .to.emit(hardhatToken, 'Staked')
+        .withArgs(owner.address, stakeTokens, 1, time + 1);
+      await expect(hardhatToken.connect(addr1).stake(stakeTokens))
+        .to.emit(hardhatToken, 'Staked')
+        .withArgs(addr1.address, stakeTokens, 2, time + 2);
+    });
+    it('Should not withdraw more then current own stake', async function () {
+      hardhatToken.stake(100);
+      await expect(hardhatToken.withdrawStake(200, 0)).to.revertedWith(
+        'Staking: Cannot withdraw more than you have staked'
+      );
+    });
+    it('Should withdraw 50 tokens from a stake', async function () {
+      let stakeTokens = 200;
+      const withdrawTokens = 50;
+      hardhatToken.stake(stakeTokens);
+      hardhatToken.withdrawStake(withdrawTokens, 0);
+      const summary = await hardhatToken.hasStake(owner.address);
+      expect(summary.total_amount).to.equal(stakeTokens - withdrawTokens);
+      // Itterate all stakes and verify their amount aswell.
+      stakeAmount = summary.stakes[0].amount;
+      expect(stakeAmount).to.equal(stakeTokens - withdrawTokens);
+    });
+    it('Should remove stake if empty', async function () {
+      hardhatToken.stake(100);
+      hardhatToken.withdrawStake(100, 0);
+      const summary = await hardhatToken.hasStake(owner.address);
+      expect(summary.stakes[0].user).to.equal(
+        '0x0000000000000000000000000000000000000000'
+      );
+    });
+    it('Should calculate proper rewards', async function () {
+      let stakeTokens = 100;
+      hardhatToken.stake(stakeTokens);
+      let summary = await hardhatToken.hasStake(owner.address);
+      await timeForward(20);
+      summary = await hardhatToken.hasStake(owner.address);
+      expect(summary.stakes[0].claimable).to.equal(stakeTokens * 0.02);
+      const newStakeTokens = 1000;
+      hardhatToken.stake(newStakeTokens);
+      summary = await hardhatToken.hasStake(owner.address);
+      await timeForward(20);
+      summary = await hardhatToken.hasStake(owner.address);
+      // Make sure total stake reward is 24 (20+4)
+      // The first 100 has been staked for 40 hours now, so its 4 in rewards.
+      expect(summary.stakes[0].claimable).to.equal(stakeTokens * 0.04);
+      expect(summary.stakes[1].claimable).to.equal(newStakeTokens * 0.02);
+    });
+    it('Should reward stakes', async function () {
+      // use fresh account
+      const staker = addr2.address;
+      hardhatToken.mint(staker, 1000);
+      const initialBalance = await hardhatToken.balanceOf(staker);
+      expect(initialBalance).to.equal(1000);
+      await hardhatToken.connect(addr2).stake(200);
+      let summary = await hardhatToken.hasStake(staker);
+      await timeForward(20);
+      summary = await hardhatToken.hasStake(staker);
+      let stake = summary.stakes[0];
+      await hardhatToken.connect(addr2).withdrawStake(100, 0);
+      // Balance of account holder should be updated by 104 tokens
+      const afterBalance = await hardhatToken.balanceOf(staker);
+      const expected = stake.claimable.add(1000 - 200 + 100);
+      expect(afterBalance).to.equal(expected);
+      // Claiming again should not return any rewards since we reset timer
+      await hardhatToken.connect(addr2).withdrawStake(100, 0);
+      const secondBalance = await hardhatToken.balanceOf(staker);
+      expect(secondBalance).to.equal(afterBalance.add(100));
     });
   });
 });
