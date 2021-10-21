@@ -12,6 +12,9 @@ const defaultNetwork = process.env.NETWORK || "localhost";
 const deployerAddress = process.env.DEPLOYER;
 const infuraKey = process.env.INFURA_KEY;
 
+const coinName = "ETH"; // change to "BCH", "FTM", "DEV" etc.
+const tokenName = "AwesomeToken";
+
 function mnemonic(network="mainnet") {
   try {
     const fileName = network === "mainnet" ? "mnemonic" : `mnemonic_${network}`
@@ -311,4 +314,39 @@ task("balance", "Prints an account's balance")
       await addr(ethers, taskArgs.account)
     );
     console.log(formatUnits(balance, "ether"), "ETH");
-});
+  });
+
+function send(signer, txparams) {
+  return signer.sendTransaction(txparams, (error, transactionHash) => {
+    if (error) {
+      debug(`Error: ${error}`);
+    }
+    debug(`transactionHash: ${transactionHash}`);
+    // checkForReceipt(2, params, transactionHash, resolve)
+  });
+}
+
+task("fund", "Fund account")
+  .addParam("account", "The account's address")
+  .addOptionalParam("amount", "Amount of tokens to send")
+  .setAction(async (taskArgs, { ethers }) => {
+    const amount = taskArgs.amount ? taskArgs.amount : "1.0";
+    console.log("\n\n Sending " + amount + " " + coinName + " to " + taskArgs.account);
+    const tx = {
+      to: taskArgs.account,
+      value: ethers.utils.parseEther(amount)
+    };
+    return send(ethers.provider.getSigner(), tx);
+  });
+
+task("mint", "Send ERC-20 tokens")
+  .addParam("account", "The account's address")
+  .addOptionalParam("amount", "Amount of tokens to send")
+  .setAction(async (taskArgs, { ethers }) => {
+    console.log("\n\n Minting to " + taskArgs.account + "...\n");
+
+    const { deployer } = await getNamedAccounts();
+    const contract = await ethers.getContract(tokenName, deployer);
+    const amount = taskArgs.amount ? parseInt(taskArgs.amount, 10) : 10;
+    await contract.transfer(taskArgs.account, ethers.utils.parseEther("" + amount));
+  });

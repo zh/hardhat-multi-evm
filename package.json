@@ -10,9 +10,8 @@
     "deploy": "hardhat deploy",
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",
-    "generate": "hardhat generate",
-    "account": "hardhat account",
-    "mint": "hardhat run scripts/mint.js"
+    "fund": "hardhat fund",
+    "mint": "hardhat mint"
   },
   "keywords": [],
   "author": "",
