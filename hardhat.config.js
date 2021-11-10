@@ -4,7 +4,7 @@ const fs = require("fs");
 require("@nomiclabs/hardhat-waffle");
 
 require("hardhat-deploy");
-require('dotenv').config()
+require("dotenv").config();
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -15,9 +15,9 @@ const infuraKey = process.env.INFURA_KEY;
 const coinName = "ETH"; // change to "BCH", "FTM", "DEV" etc.
 const tokenName = "AwesomeToken";
 
-function mnemonic(network="mainnet") {
+function mnemonic(network = "mainnet") {
   try {
-    const fileName = network === "mainnet" ? "mnemonic" : `mnemonic_${network}`
+    const fileName = network === "mainnet" ? "mnemonic" : `mnemonic_${network}`;
     return fs.readFileSync(`./${fileName}.txt`).toString().trim();
   } catch (e) {
     if (defaultNetwork !== "localhost") {
@@ -30,7 +30,7 @@ function mnemonic(network="mainnet") {
 }
 
 /**
- * @type import('hardhat/config').HardhatUserConfig
+ * @type import("hardhat/config").HardhatUserConfig
  */
 module.exports = {
   defaultNetwork,
@@ -41,27 +41,27 @@ module.exports = {
     kovan: {
       url: "https://kovan.infura.io/v3/" + infuraKey,
       accounts: {
-        mnemonic: mnemonic()
-      }
+        mnemonic: mnemonic(),
+      },
     },
     testnetSmartBCH: {
       url: "http://35.220.203.194:8545", // "https://moeing.tech:9545",
       chainId: 10001,
       gasPrice: 1050000000,
       accounts: {
-        mnemonic: mnemonic("testnet")
-      }
+        mnemonic: mnemonic("testnet"),
+      },
     },
     mainnetSmartBCH: {
       url: "https://smartbch.greyh.at", // "https://global.uat.cash",
       chainId: 10000,
       gasPrice: 1050000000,
       accounts: {
-        mnemonic: mnemonic()
-      }
+        mnemonic: mnemonic(),
+      },
     },
     localAvalanche: {
-      url: 'http://localhost:9650/ext/bc/C/rpc',
+      url: "http://localhost:9650/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43112,
       accounts: [
@@ -74,40 +74,40 @@ module.exports = {
         "0xbbc2865b76ba28016bc2255c7504d000e046ae01934b04c694592a6276988630",
         "0xcdbfd34f687ced8c6968854f8a99ae47712c4f4183b78dcc4a903d1bfe8cbf60",
         "0x86f78c5416151fe3546dece84fda4b4b1e36089f2dbc48496faf3a950f16157c",
-        "0x750839e9dbbd2a0910efe40f50b2f3b2f2f59f5580bb4b83bd8c1201cf9a010a"
-      ]
+        "0x750839e9dbbd2a0910efe40f50b2f3b2f2f59f5580bb4b83bd8c1201cf9a010a",
+      ],
     },
     fujiAvalanche: {
-      url: 'https://api.avax-test.network/ext/bc/C/rpc',
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43113,
       accounts: {
-        mnemonic: mnemonic("testnet")
-      }
+        mnemonic: mnemonic("testnet"),
+      },
     },
     mainnetAvalanche: {
-      url: 'https://api.avax.network/ext/bc/C/rpc',
+      url: "https://api.avax.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43114,
       accounts: {
-        mnemonic: mnemonic()
-      }
+        mnemonic: mnemonic(),
+      },
     },
     testnetFantom: {
-      url: 'https://rpc.testnet.fantom.network/',
+      url: "https://rpc.testnet.fantom.network/",
       gasPrice: 1800000000,
       chainId: 4002,
       accounts: {
-        mnemonic: mnemonic("testnet")
-      }
+        mnemonic: mnemonic("testnet"),
+      },
     },
     fantomOpera: {
-      url: 'https://rpc.ftm.tools/',
+      url: "https://rpc.ftm.tools/",
       gasPrice: 1600000000,
       chainId: 250,
       accounts: {
-        mnemonic: mnemonic()
-      }
+        mnemonic: mnemonic(),
+      },
     },
     moondev: {
       url: "http://127.0.0.1:9933",
@@ -148,6 +148,30 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    testnetHarmony: {
+      url: "https://api.s0.b.hmny.io",
+      gasPrice: 1000000000,
+      chainId: 1666700000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
+    mainnetHarmony: {
+      url: "https://api.harmony.one",
+      gasPrice: 1000000000,
+      chainId: 1666600000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    kaleido: {
+      url: `https://${process.env.KALEIDO_USER}:${process.env.KALEIDO_PASS}@${process.env.KALEIDO_URL}.kaleido.io/`,
+      chainId: parseInt(process.env.KALEIDO_CHAINID, 10),
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
   },
   solidity: {
     compilers: [
@@ -162,6 +186,24 @@ module.exports = {
       },
       {
         version: "0.8.1",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.8.0",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.7.6",
         settings: {
           optimizer: {
             enabled: true,
@@ -186,21 +228,39 @@ module.exports = {
             runs: 200,
           },
         },
-      }
-    ]
+      },
+      {
+        version: "0.6.12",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.5.17",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
-      'kovan': deployerAddress,
-      'mainnetSmartBCH': deployerAddress,
-      'testnetSmartBCH': deployerAddress,
-      'fujiAva': deployerAddress,
-      'mainnetAva': deployerAddress,
-      'testnetFantom': deployerAddress,
-      'fantomOpera': deployerAddress
+      kovan: deployerAddress,
+      mainnetSmartBCH: deployerAddress,
+      testnetSmartBCH: deployerAddress,
+      fujiAva: deployerAddress,
+      mainnetAva: deployerAddress,
+      testnetFantom: deployerAddress,
+      fantomOpera: deployerAddress,
     },
-  }
+  },
 };
 
 const DEBUG = true;
@@ -238,7 +298,7 @@ task(
         " and set as mnemonic in packages/hardhat"
     );
     console.log(
-      "💬 Use 'npm run account' to get more information about the deployment account."
+      "💬 Use "npm run account" to get more information about the deployment account."
     );
 
     fs.writeFileSync("./" + address + ".txt", mnemonic.toString());
@@ -307,8 +367,8 @@ task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
   accounts.forEach((account) => console.log(account));
 });
 
-task("balance", "Prints an account's balance")
-  .addPositionalParam("account", "The account's address")
+task("balance", "Prints an account"s balance")
+  .addPositionalParam("account", "The account"s address")
   .setAction(async (taskArgs, { ethers }) => {
     const balance = await ethers.provider.getBalance(
       await addr(ethers, taskArgs.account)
@@ -327,20 +387,22 @@ function send(signer, txparams) {
 }
 
 task("fund", "Fund account")
-  .addParam("account", "The account's address")
+  .addParam("account", "The account"s address")
   .addOptionalParam("amount", "Amount of tokens to send")
   .setAction(async (taskArgs, { ethers }) => {
     const amount = taskArgs.amount ? taskArgs.amount : "1.0";
-    console.log("\n\n Sending " + amount + " " + coinName + " to " + taskArgs.account);
+    console.log(
+      "\n\n Sending " + amount + " " + coinName + " to " + taskArgs.account
+    );
     const tx = {
       to: taskArgs.account,
-      value: ethers.utils.parseEther(amount)
+      value: ethers.utils.parseEther(amount),
     };
     return send(ethers.provider.getSigner(), tx);
   });
 
 task("mint", "Send ERC-20 tokens")
-  .addParam("account", "The account's address")
+  .addParam("account", "The account"s address")
   .addOptionalParam("amount", "Amount of tokens to send")
   .setAction(async (taskArgs, { ethers }) => {
     console.log("\n\n Minting to " + taskArgs.account + "...\n");
@@ -348,5 +410,8 @@ task("mint", "Send ERC-20 tokens")
     const { deployer } = await getNamedAccounts();
     const contract = await ethers.getContract(tokenName, deployer);
     const amount = taskArgs.amount ? parseInt(taskArgs.amount, 10) : 10;
-    await contract.transfer(taskArgs.account, ethers.utils.parseEther("" + amount));
+    await contract.transfer(
+      taskArgs.account,
+      ethers.utils.parseEther("" + amount)
+    );
   });
