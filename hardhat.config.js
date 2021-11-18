@@ -164,6 +164,22 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    testnetBSC: {
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      chainId: 97,
+      gasPrice: 20000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
+    mainnetBSC: {
+      url: "https://bsc-dataseed.binance.org/",
+      chainId: 56,
+      gasPrice: 20000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     kaleido: {
       url: `https://${process.env.KALEIDO_USER}:${process.env.KALEIDO_PASS}@${process.env.KALEIDO_URL}.kaleido.io/`,
       chainId: parseInt(process.env.KALEIDO_CHAINID, 10),
@@ -297,9 +313,7 @@ task(
         address +
         " and set as mnemonic in packages/hardhat"
     );
-    console.log(
-      "💬 Use "npm run account" to get more information about the deployment account."
-    );
+    console.log("💬 Use 'npm run account' to get more information about the deployment account.");
 
     fs.writeFileSync("./" + address + ".txt", mnemonic.toString());
     fs.writeFileSync("./mnemonic.txt", mnemonic.toString());
@@ -367,8 +381,8 @@ task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
   accounts.forEach((account) => console.log(account));
 });
 
-task("balance", "Prints an account"s balance")
-  .addPositionalParam("account", "The account"s address")
+task("balance", "Prints an account's balance")
+  .addPositionalParam("account", "The account's address")
   .setAction(async (taskArgs, { ethers }) => {
     const balance = await ethers.provider.getBalance(
       await addr(ethers, taskArgs.account)
@@ -387,7 +401,7 @@ function send(signer, txparams) {
 }
 
 task("fund", "Fund account")
-  .addParam("account", "The account"s address")
+  .addParam("account", "The account's address")
   .addOptionalParam("amount", "Amount of tokens to send")
   .setAction(async (taskArgs, { ethers }) => {
     const amount = taskArgs.amount ? taskArgs.amount : "1.0";
@@ -402,7 +416,7 @@ task("fund", "Fund account")
   });
 
 task("mint", "Send ERC-20 tokens")
-  .addParam("account", "The account"s address")
+  .addParam("account", "The account's address")
   .addOptionalParam("amount", "Amount of tokens to send")
   .setAction(async (taskArgs, { ethers }) => {
     console.log("\n\n Minting to " + taskArgs.account + "...\n");
