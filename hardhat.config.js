@@ -172,20 +172,20 @@ module.exports = {
         mnemonic: mnemonic("testnet"),
       },
     },
-    bakerloo: {
-      url: "https://rpc4.bakerloo.autonity.network:8545",
-      chainId: 444900,
-      gasPrice: 10000000000,
-      accounts: {
-        mnemonic: mnemonic("testnet"),
-      },
-    },
     mainnetBSC: {
       url: "https://bsc-dataseed.binance.org/",
       chainId: 56,
       gasPrice: 20000000000,
       accounts: {
         mnemonic: mnemonic(),
+      },
+    },
+    bakerloo: {
+      url: "https://rpc4.bakerloo.autonity.network:8545",
+      chainId: 444900,
+      gasPrice: 10000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
       },
     },
     kaleido: {
