@@ -124,6 +124,14 @@ module.exports = {
         mnemonic: mnemonic("testnet"),
       },
     },
+    moonbeam: {
+      url: "https://rpc.api.moonbeam.network",
+      gasPrice: 1000000000,
+      chainId: 1284,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     moonriver: {
       url: "https://rpc.moonriver.moonbeam.network",
       chainId: 1285,
