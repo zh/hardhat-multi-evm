@@ -44,6 +44,30 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    xdai: {
+      url: "https://rpc.xdaichain.com/",
+      chainId: 100,
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    polygon: {
+      url: "https://polygon-rpc.com/",
+      chainId: 137,
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com/",
+      chainId: 80001,
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
     testnetSmartBCH: {
       url: "http://35.220.203.194:8545", // "https://moeing.tech:9545",
       chainId: 10001,
