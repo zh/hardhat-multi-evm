@@ -1,4 +1,3 @@
-const { utils } = require("ethers");
 const fs = require("fs");
 
 require("@nomiclabs/hardhat-waffle");
@@ -6,14 +5,17 @@ require("@nomiclabs/hardhat-waffle");
 require("hardhat-deploy");
 require("dotenv").config();
 
-const { isAddress, getAddress, formatUnits, parseUnits } = utils;
+require("./tasks/generate");
+require("./tasks/account");
+require("./tasks/accounts");
+require("./tasks/balance");
+require("./tasks/fund");
+require("./tasks/mint");
+require("./tasks/tokens");
 
 const defaultNetwork = process.env.NETWORK || "localhost";
 const deployerAddress = process.env.DEPLOYER;
 const infuraKey = process.env.INFURA_KEY;
-
-const coinName = "ETH"; // change to "BCH", "FTM", "DEV" etc.
-const tokenName = "AwesomeToken";
 
 function mnemonic(network = "mainnet") {
   try {
@@ -350,154 +352,3 @@ module.exports = {
     },
   },
 };
-
-const DEBUG = true;
-
-function debug(text) {
-  if (DEBUG) {
-    console.log(text);
-  }
-}
-
-task(
-  "generate",
-  "Create a mnemonic for builder deploys",
-  async (_, { ethers }) => {
-    const bip39 = require("bip39");
-    const hdkey = require("ethereumjs-wallet/hdkey");
-    const mnemonic = bip39.generateMnemonic();
-    if (DEBUG) console.log("mnemonic", mnemonic);
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    if (DEBUG) console.log("seed", seed);
-    const hdwallet = hdkey.fromMasterSeed(seed);
-    const wallet_hdpath = "m/44'/60'/0'/0/";
-    const account_index = 0;
-    let fullPath = wallet_hdpath + account_index;
-    if (DEBUG) console.log("fullPath", fullPath);
-    const wallet = hdwallet.derivePath(fullPath).getWallet();
-    const privateKey = "0x" + wallet._privKey.toString("hex");
-    if (DEBUG) console.log("privateKey", privateKey);
-    var EthUtil = require("ethereumjs-util");
-    const address =
-      "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
-    console.log(
-      "🔐 Account Generated as " +
-        address +
-        " and set as mnemonic in packages/hardhat"
-    );
-    console.log("💬 Use 'npm run account' to get more information about the deployment account.");
-
-    fs.writeFileSync("./" + address + ".txt", mnemonic.toString());
-    fs.writeFileSync("./mnemonic.txt", mnemonic.toString());
-  }
-);
-
-task(
-  "account",
-  "Get balance informations for the deployment account.",
-  async (_, { ethers }) => {
-    const hdkey = require("ethereumjs-wallet/hdkey");
-    const bip39 = require("bip39");
-    let mnemonic = fs.readFileSync("./mnemonic.txt").toString().trim();
-    if (DEBUG) console.log("mnemonic", mnemonic);
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    if (DEBUG) console.log("seed", seed);
-    const hdwallet = hdkey.fromMasterSeed(seed);
-    const wallet_hdpath = "m/44'/60'/0'/0/";
-    const account_index = 0;
-    let fullPath = wallet_hdpath + account_index;
-    if (DEBUG) console.log("fullPath", fullPath);
-    const wallet = hdwallet.derivePath(fullPath).getWallet();
-    const privateKey = "0x" + wallet._privKey.toString("hex");
-    if (DEBUG) console.log("privateKey", privateKey);
-    var EthUtil = require("ethereumjs-util");
-    const address =
-      "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
-    var qrcode = require("qrcode-terminal");
-    qrcode.generate(address);
-    console.log("📬 Deployer Account is " + address);
-    for (let n in config.networks) {
-      //console.log(config.networks[n],n)
-      try {
-        let provider = new ethers.providers.JsonRpcProvider(
-          config.networks[n].url
-        );
-        let balance = await provider.getBalance(address);
-        console.log(" -- " + n + " --  -- -- 📡 ");
-        console.log("   balance: " + ethers.utils.formatEther(balance));
-        console.log(
-          "   nonce: " + (await provider.getTransactionCount(address))
-        );
-      } catch (e) {
-        if (DEBUG) {
-          console.log(e);
-        }
-      }
-    }
-  }
-);
-
-async function addr(ethers, addr) {
-  if (isAddress(addr)) {
-    return getAddress(addr);
-  }
-  const accounts = await ethers.provider.listAccounts();
-  if (accounts[addr] !== undefined) {
-    return accounts[addr];
-  }
-  throw `Could not normalize address: ${addr}`;
-}
-
-task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
-  const accounts = await ethers.provider.listAccounts();
-  accounts.forEach((account) => console.log(account));
-});
-
-task("balance", "Prints an account's balance")
-  .addPositionalParam("account", "The account's address")
-  .setAction(async (taskArgs, { ethers }) => {
-    const balance = await ethers.provider.getBalance(
-      await addr(ethers, taskArgs.account)
-    );
-    console.log(formatUnits(balance, "ether"), "ETH");
-  });
-
-function send(signer, txparams) {
-  return signer.sendTransaction(txparams, (error, transactionHash) => {
-    if (error) {
-      debug(`Error: ${error}`);
-    }
-    debug(`transactionHash: ${transactionHash}`);
-    // checkForReceipt(2, params, transactionHash, resolve)
-  });
-}
-
-task("fund", "Fund account")
-  .addParam("account", "The account's address")
-  .addOptionalParam("amount", "Amount of tokens to send")
-  .setAction(async (taskArgs, { ethers }) => {
-    const amount = taskArgs.amount ? taskArgs.amount : "1.0";
-    console.log(
-      "\n\n Sending " + amount + " " + coinName + " to " + taskArgs.account
-    );
-    const tx = {
-      to: taskArgs.account,
-      value: ethers.utils.parseEther(amount),
-    };
-    return send(ethers.provider.getSigner(), tx);
-  });
-
-task("mint", "Send ERC-20 tokens")
-  .addParam("account", "The account's address")
-  .addOptionalParam("amount", "Amount of tokens to send")
-  .setAction(async (taskArgs, { ethers }) => {
-    console.log("\n\n Minting to " + taskArgs.account + "...\n");
-
-    const { deployer } = await getNamedAccounts();
-    const contract = await ethers.getContract(tokenName, deployer);
-    const amount = taskArgs.amount ? parseInt(taskArgs.amount, 10) : 10;
-    await contract.transfer(
-      taskArgs.account,
-      ethers.utils.parseEther("" + amount)
-    );
-  });
