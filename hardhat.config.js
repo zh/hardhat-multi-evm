@@ -212,6 +212,38 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    testnetTelos: {
+      url: "https://testnet.telos.net/evm",
+      chainId: 41,
+      gasPrice: 500000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
+    mainnetTelos: {
+      url: "https://mainnet.telos.net/evm",
+      chainId: 40,
+      gasPrice: 500000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    testnetAurora: {
+      url: "https://testnet.aurora.dev",
+      chainId: 1313161555,
+      gasPrice: 120 * 1000000000,
+      accounts: {
+        mnemonic: mnemonic("testnet"),
+      },
+    },
+    mainnetAurora: {
+      url: "https://mainnet.aurora.dev",
+      chainId: 1313161554,
+      gasPrice: 120 * 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     bakerloo: {
       url: "https://rpc4.bakerloo.autonity.network:8545",
       chainId: 444900,
